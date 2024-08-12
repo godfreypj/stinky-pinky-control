@@ -1,0 +1,27 @@
+# Node.js dependencies
+node_modules/
+
+# Compiled JavaScript (if applicable)
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+
+# OS-specific files
+.DS_Store
+thumbs.db
+
+# Environment variables
+.env
