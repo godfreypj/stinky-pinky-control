@@ -29,8 +29,6 @@ export const generateNewRound = async (): Promise<Round> => {
       throw new ApiRequestError(`API returned an error: ${response.data.error}`);
     }
 
-    console.log(response.data)
-
     const round: Round = {
       word1: response.data.text.word1,
       word2: response.data.text.word2,

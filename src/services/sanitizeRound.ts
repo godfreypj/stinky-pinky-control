@@ -20,7 +20,6 @@ export const roundExists = async (round: Round, collectionName: string): Promise
       return !querySnapshot2.empty;
     
     } catch (error) {
-        console.error('Error checking for existing round:', error);
-        throw error; // Re-throw the error for handling in the calling code
+        throw error;
     }
 };

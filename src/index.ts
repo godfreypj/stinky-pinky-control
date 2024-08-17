@@ -23,7 +23,6 @@ app.get('/', async (req, res) => {
     // Keep generating new rounds until a unique one is found
     while (!isUnique) {
       round = await generateNewRound();
-      console.log(round)
       isUnique = !(await roundExists(round, collectionName));
     }
 
@@ -39,9 +38,7 @@ app.get('/', async (req, res) => {
     }
   } catch (error) {
     if (error instanceof ApiRequestError || error instanceof InvalidApiResponseError) {
-      // Handle API request errors or invalid response errors
-      console.error(error.message);
-      res.status(500).send(error.message); // Or a more user-friendly error message
+      res.status(500).send(error.message);
     } else {
     res.status(500).send('Error fetching data from API' + error);
     }
