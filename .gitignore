@@ -25,3 +25,4 @@ thumbs.db
 
 # Environment variables
 .env
+serviceAccountKey.json

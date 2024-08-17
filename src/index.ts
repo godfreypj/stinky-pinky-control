@@ -1,7 +1,11 @@
 import express from 'express';
-import axios from 'axios';
 import * as dotenv from 'dotenv';
 import cors from "cors";
+import { db } from '../firebase'
+import { generateNewRound } from './services/newRound';
+import { Round } from './interfaces/round';
+import { roundExists } from './services/sanitizeRound';
+import { ApiRequestError, InvalidApiResponseError } from './utils/errors';
 
 const app = express();
 app.use(cors());
@@ -10,28 +14,37 @@ dotenv.config();
 
 app.get('/', async (req, res) => {
   try {
-    const apiUrl = process.env.API_SERVICE;
-    const workstationJwt = process.env.WORKSTATION_JWT;
+    let round: Round | null = null;
+    let isUnique = false;
 
-    if (!apiUrl) {
-      throw new Error('API_SERVICE environment variable not set');
+    const environment = process.env.PROJECT_ENV; 
+    const collectionName = `stinky-pinky-rounds-${environment}`;
+
+    // Keep generating new rounds until a unique one is found
+    while (!isUnique) {
+      round = await generateNewRound();
+      console.log(round)
+      isUnique = !(await roundExists(round, collectionName));
     }
 
-    const response = await axios.get(apiUrl + 'api/generate', {
-      baseURL: apiUrl,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cookie': workstationJwt
-      },
-      withCredentials: true,
-    });
-
-    const apiData = response.data;
-
-    res.send(`${JSON.stringify(apiData, null, 2)}`);
+    if (round) {
+      try {
+        const docRef = await db.collection(collectionName).add(round);
+        res.send("Document written with ID: " + docRef.id);
+      } catch (error) {
+        res.send("Error adding document: " + error);
+      }
+    } else {
+      res.status(500).send('Unable to generate a unique round.');
+    }
   } catch (error) {
-    console.error('Error fetching data from API:', error);
+    if (error instanceof ApiRequestError || error instanceof InvalidApiResponseError) {
+      // Handle API request errors or invalid response errors
+      console.error(error.message);
+      res.status(500).send(error.message); // Or a more user-friendly error message
+    } else {
     res.status(500).send('Error fetching data from API' + error);
+    }
   }
 });
 
