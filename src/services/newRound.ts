@@ -2,14 +2,15 @@
 import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { Round } from '../interfaces/round';
+import { Config } from '../interfaces/config'
 import { ApiRequestError } from '../utils/errors';
 
 dotenv.config();
 
-export const generateNewRound = async (): Promise<Round> => {
+export const generateNewRound = async (config: Config): Promise<Round> => {
   try {
-    const apiUrl = process.env.SP_BRAIN;
-    const workstationJwt = process.env.WORKSTATION_JWT;
+    const apiUrl = config.apiUrl;
+    const workstationJwt = config.workstationJwt;
 
     if (!apiUrl) {
       throw new Error('API_SERVICE environment variable not set');
