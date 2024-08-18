@@ -34,7 +34,7 @@ export const generateNewRound = async (config: Config, req: any): Promise<Round>
       console.log(token)
       headers = {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}` 
+        'Cookie': `WorkstationJwt=${token}` 
       }
     }
 
