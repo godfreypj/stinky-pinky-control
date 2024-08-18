@@ -9,31 +9,30 @@ import { GoogleAuth } from 'google-auth-library';
 async function generateIdToken(config: Config) {
   try {
     const auth = new GoogleAuth({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'] 
+      scopes: ['https://www.googleapis.com/auth/cloud-platform']
     });
-
     const client = await auth.getClient();
 
     // Directly request an ID token with the target audience
-    const idToken = await client.request({
+    const response = await client.request({
       url: 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=' + config.apiUrl,
-      headers: { 
-        'Metadata-Flavor': 'Google' 
-      }
+      headers: {
+        'Metadata-Flavor': 'Google'
+      },
+      responseType: 'text' // Explicitly set the response type to 'text'
     });
 
-    if (!idToken || !idToken.data) {
+    const idToken = response.data;
+
+    if (!idToken) {
       throw new Error('Failed to generate ID token. No token returned.');
     }
 
-    // Convert the Buffer to a string
-    const tokenString = idToken.data.toString(); 
-
-    return tokenString; 
+    return idToken;
 
   } catch (error) {
     console.error('Error generating ID token:', error);
-    throw new Error('Failed to generate ID token.'); 
+    throw new Error('Failed to generate ID token.');
   }
 }
 
