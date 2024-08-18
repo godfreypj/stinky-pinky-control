@@ -5,6 +5,14 @@ import { ConfigLoadingError, FirebaseInitError } from './errors';
 import { initializeFirebase, db } from '../../firebase';
 import { Config } from '../interfaces/config';
 
+/**
+ * Attemps to create a configuration object.
+ * The collection to be written is based on the current environment.
+ * If a config cannot be create the application is not started.
+ * 
+ * @returns Config - A new configuration.
+ * @throws FirebaseInitError 0r Exits the process if a configuration cannot be loaded.
+ */
 export async function loadAndInitializeConfig() {
   try {
     dotenv.config();

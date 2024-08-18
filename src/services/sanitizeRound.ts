@@ -3,7 +3,14 @@
 import { db } from '../../firebase';
 import { Round } from '../interfaces/round';
 
-
+/**
+ * Checks if a given round is unique within a specified Firestore collection.
+ * 
+ * @param Round - The Round object to check for uniqueness.
+ * @param collectionName - The name of the Firestore collection to query, based on environment.
+ * @returns Boolean that resolves to `true` if the round is unique, `false` otherwise.
+ * @throws An error if there's an issue querying Firestore.
+ */
 export const isRoundUnique = async (round: Round, collectionName: string): Promise<boolean> => {
     try {
         // Query for documents where either word matches in either position
@@ -22,6 +29,6 @@ export const isRoundUnique = async (round: Round, collectionName: string): Promi
       return !querySnapshot2.empty;
     
     } catch (error) {
-        throw error;
+        throw new Error('Error sanitizing round: ' + error);
     }
 };

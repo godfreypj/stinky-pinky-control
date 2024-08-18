@@ -4,49 +4,28 @@ import axios from 'axios';
 import { Round } from '../interfaces/round';
 import { Config } from '../interfaces/config'
 import { ApiRequestError } from '../utils/errors';
-import { GoogleAuth } from 'google-auth-library';
+import { generateIdToken } from '../utils/token';
 
-async function generateIdToken(config: Config) {
-  try {
-    const auth = new GoogleAuth({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform']
-    });
-    const client = await auth.getClient();
-
-    // Directly request an ID token with the target audience
-    const response = await client.request({
-      url: 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=' + config.apiUrl,
-      headers: {
-        'Metadata-Flavor': 'Google'
-      },
-      responseType: 'text' // Explicitly set the response type to 'text'
-    });
-
-    const idToken = response.data;
-
-    if (!idToken) {
-      throw new Error('Failed to generate ID token. No token returned.');
-    }
-
-    return idToken;
-
-  } catch (error) {
-    console.error('Error generating ID token:', error);
-    throw new Error('Failed to generate ID token.');
-  }
-}
-
-export const generateNewRound = async (config: Config, req: any): Promise<Round> => {
+/**
+ * Given the applications config, query the Brain application for a new round.
+ * If the round is not unique (to the given environment), query until a unique round is found.
+ * 
+ * @param Config - The apps config object.
+ * @returns Round A unique round.
+ * @throws ApiRequestError if there's an issue finding a unique round.
+ */
+export const generateNewRound = async (config: Config): Promise<Round> => {
   try {
     const apiUrl = config.apiUrl;
     const projectEnv = config.projectEnv;
 
     if (!apiUrl) {
-      throw new Error('API_SERVICE environment variable not set');
+      throw new Error('API_SERVICE environmental variable not set');
     }
 
     let headers = {}
-    // Set this up a little differently for local running
+
+    // Local request, put the JWT into the Cookies
     if(projectEnv === 'local') {
       if (!config.workstationJwt) {
         throw new Error('WORKSTATION_JWT environment variable not set in local environment');
@@ -55,26 +34,27 @@ export const generateNewRound = async (config: Config, req: any): Promise<Round>
         'Content-Type': 'application/json',
         'Cookie': config.workstationJwt
       }
-    } else {
+    } else { // Deployed request, get a real token from the service
       const token = await generateIdToken(config)
-      console.log(token)
       headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` 
       }
     }
 
+    // Call the brain
     const response = await axios.get(apiUrl + 'api/generate', {
       baseURL: apiUrl,
       headers: headers,
       withCredentials: true,
     });
 
-    // Error handling
+    // Make sure we return the error from the brain, if there was one
     if (response.data.error) {
       throw new ApiRequestError(`API returned an error: ${response.data.error}`);
     }
 
+    // Build a new round object and return it
     const round: Round = {
       word1: response.data.text.word1,
       word2: response.data.text.word2,
@@ -88,7 +68,7 @@ export const generateNewRound = async (config: Config, req: any): Promise<Round>
     if (axios.isAxiosError(error)) {
       throw new ApiRequestError(`Error fetching data from API: ${error.message}`);
     } else {
-      throw error;
+      throw new Error('Error creating new round: ' + error);
     }
   }
 };

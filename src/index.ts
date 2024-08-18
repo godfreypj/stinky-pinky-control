@@ -1,10 +1,9 @@
 import express from 'express';
-import * as dotenv from 'dotenv';
 import cors from "cors";
 import { generateNewRound } from './services/newRound';
 import { Round } from './interfaces/round';
 import { isRoundUnique } from './services/sanitizeRound';
-import { ApiRequestError, ConfigLoadingError, InvalidApiResponseError } from './utils/errors';
+import { ApiRequestError, InvalidApiResponseError } from './utils/errors';
 import { loadAndInitializeConfig } from './utils/loadConfig';
 
 const app = express();
@@ -26,7 +25,7 @@ async function startServer() {
         const database = config.db;
     
         while (!isUnique) {
-          round = await generateNewRound(config, req);
+          round = await generateNewRound(config);
           isUnique = !(await isRoundUnique(round, roundCollection));
         }
     
