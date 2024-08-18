@@ -1,7 +1,7 @@
 // utils/loadConfig.js
 
 import * as dotenv from 'dotenv';
-import { ConfigLoadingError, FirebaseInitError } from './errors';
+import { ConfigLoadingError, FirebaseError } from './errors';
 import { initializeFirebase, db } from '../../firebase';
 import { Config } from '../interfaces/config';
 
@@ -29,7 +29,7 @@ export async function loadAndInitializeConfig() {
     try {
       await initializeFirebase(); 
     } catch (error) {
-      throw new FirebaseInitError(`Error initializing Firebase: ${error.message}`);
+      throw new FirebaseError(`Error initializing Firebase: ${error.message}`);
     }
 
     // Return the loaded configuration

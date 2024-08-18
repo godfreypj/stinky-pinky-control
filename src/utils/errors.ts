@@ -32,11 +32,11 @@ class ConfigLoadingError extends CustomError {
   }
 }
 
-class FirebaseInitError extends CustomError {
+class FirebaseError extends CustomError {
   constructor(message: string) {
     super(message);
     this.name = 'FirebaseInitError';
   }
 }
 
-export { ApiRequestError, InvalidApiResponseError, ConfigLoadingError, FirebaseInitError };
+export { ApiRequestError, InvalidApiResponseError, ConfigLoadingError, FirebaseError };

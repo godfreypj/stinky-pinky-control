@@ -5,6 +5,7 @@ import { Round } from './interfaces/round';
 import { isRoundUnique } from './services/sanitizeRound';
 import { ApiRequestError, InvalidApiResponseError } from './utils/errors';
 import { loadAndInitializeConfig } from './utils/loadConfig';
+import { writeRound } from './services/writeRound';
 
 const app = express();
 app.use(cors());
@@ -21,17 +22,14 @@ async function startServer() {
         let round: Round | null = null;
         let isUnique = false;
     
-        const roundCollection = config.roundCollection;
-        const database = config.db;
-    
         while (!isUnique) {
           round = await generateNewRound(config);
-          isUnique = !(await isRoundUnique(round, roundCollection));
+          isUnique = !(await isRoundUnique(round, config.roundCollection));
         }
     
         if (round) {
           try {
-            const docRef = await database.collection(roundCollection).add(round);
+            const docRef = await writeRound(round, config)
             res.send("Document written with ID: " + docRef.id);
           } catch (error) {
             res.send("Error adding document: " + error);
