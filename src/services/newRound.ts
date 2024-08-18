@@ -1,13 +1,10 @@
 // src/services/newRound.ts
 
-import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { Round } from '../interfaces/round';
 import { Config } from '../interfaces/config'
 import { ApiRequestError } from '../utils/errors';
 import { GoogleAuth } from 'google-auth-library';
-
-dotenv.config();
 
 export const generateNewRound = async (config: Config, req: any): Promise<Round> => {
   try {
@@ -33,11 +30,6 @@ export const generateNewRound = async (config: Config, req: any): Promise<Round>
         scopes: 'https://www.googleapis.com/auth/cloud-platform'
       });
       const client = await auth.getClient();
-      const projectId = await auth.getProjectId();
-      const deployRegion = config.deployRegion;
-      const serviceName = config.serviceName;
-      const url = `https://run.googleapis.com/v1/projects/${projectId}/locations/${deployRegion}/services/${serviceName}`;
-
       const { token } = await client.getAccessToken();
       headers = {
         'Content-Type': 'application/json',

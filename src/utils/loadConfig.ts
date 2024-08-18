@@ -10,7 +10,7 @@ export async function loadAndInitializeConfig() {
     dotenv.config();
 
     // Check for required environment variables
-    const requiredEnvVars = ['SP_BRAIN', 'WORKSTATION_JWT', 'PROJECT_ENV', '_DEPLOY_REGION', '_SERVICE_NAME'];
+    const requiredEnvVars = ['SP_BRAIN', 'WORKSTATION_JWT', 'PROJECT_ENV'];
     for (const varName of requiredEnvVars) {
       if (!process.env[varName]) {
         throw new ConfigLoadingError(`Missing required environment variable: ${varName}`);
@@ -30,9 +30,7 @@ export async function loadAndInitializeConfig() {
       workstationJwt: process.env.WORKSTATION_JWT as string,
       projectEnv: process.env.PROJECT_ENV as string,
       roundCollection: `stinky-pinky-rounds-${process.env.PROJECT_ENV}`,
-      db: db,
-      deployRegion: process.env._DEPLOY_REGION as string,
-      serviceName: process.env._SERVICE_NAME as string,
+      db: db
     };
     return appConfig;
 

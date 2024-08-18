@@ -6,6 +6,4 @@ export interface Config {
     projectEnv: string;
     roundCollection: string;
     db: FirebaseFirestore.Firestore;
-    deployRegion: string;
-    serviceName: string;
   }
