@@ -26,7 +26,10 @@ async function generateIdToken(config: Config) {
       throw new Error('Failed to generate ID token. No token returned.');
     }
 
-    return idToken.data;
+    // Convert the Buffer to a string
+    const tokenString = idToken.data.toString(); 
+
+    return tokenString; 
 
   } catch (error) {
     console.error('Error generating ID token:', error);
