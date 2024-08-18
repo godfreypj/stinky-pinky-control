@@ -5,24 +5,49 @@ import axios from 'axios';
 import { Round } from '../interfaces/round';
 import { Config } from '../interfaces/config'
 import { ApiRequestError } from '../utils/errors';
+import { GoogleAuth } from 'google-auth-library';
 
 dotenv.config();
 
 export const generateNewRound = async (config: Config, req: any): Promise<Round> => {
   try {
     const apiUrl = config.apiUrl;
-    const workstationJwt = config.workstationJwt;
+    const projectEnv = config.projectEnv;
 
     if (!apiUrl) {
       throw new Error('API_SERVICE environment variable not set');
     }
 
+    let headers = {}
+    // Set this up a little differently for local running
+    if(projectEnv === 'local') {
+      if (!config.workstationJwt) {
+        throw new Error('WORKSTATION_JWT environment variable not set in local environment');
+      }
+      headers = {
+        'Content-Type': 'application/json',
+        'Cookie': config.workstationJwt
+      }
+    } else {
+      const auth = new GoogleAuth({
+        scopes: 'https://www.googleapis.com/auth/cloud-platform'
+      });
+      const client = await auth.getClient();
+      const projectId = await auth.getProjectId();
+      const deployRegion = config.deployRegion;
+      const serviceName = config.serviceName;
+      const url = `https://run.googleapis.com/v1/projects/${projectId}/locations/${deployRegion}/services/${serviceName}`;
+
+      const { token } = await client.getAccessToken();
+      headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}` 
+      }
+    }
+
     const response = await axios.get(apiUrl + 'api/generate', {
       baseURL: apiUrl,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(workstationJwt ? { 'Cookie': workstationJwt } : { 'Cookie': req.headers.cookies })
-      },
+      headers: headers,
       withCredentials: true,
     });
 

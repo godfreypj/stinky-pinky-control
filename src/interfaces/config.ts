@@ -5,5 +5,7 @@ export interface Config {
     workstationJwt: string;
     projectEnv: string;
     roundCollection: string;
-    db: FirebaseFirestore.Firestore; 
+    db: FirebaseFirestore.Firestore;
+    deployRegion: string;
+    serviceName: string;
   }
