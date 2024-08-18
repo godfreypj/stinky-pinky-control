@@ -6,6 +6,34 @@ import { Config } from '../interfaces/config'
 import { ApiRequestError } from '../utils/errors';
 import { GoogleAuth } from 'google-auth-library';
 
+async function generateIdToken(config: Config) {
+  try {
+    const auth = new GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'] 
+    });
+
+    const client = await auth.getClient();
+
+    // Directly request an ID token with the target audience
+    const idToken = await client.request({
+      url: 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=' + config.apiUrl,
+      headers: { 
+        'Metadata-Flavor': 'Google' 
+      }
+    });
+
+    if (!idToken || !idToken.data) {
+      throw new Error('Failed to generate ID token. No token returned.');
+    }
+
+    return idToken.data;
+
+  } catch (error) {
+    console.error('Error generating ID token:', error);
+    throw new Error('Failed to generate ID token.'); 
+  }
+}
+
 export const generateNewRound = async (config: Config, req: any): Promise<Round> => {
   try {
     const apiUrl = config.apiUrl;
@@ -26,15 +54,11 @@ export const generateNewRound = async (config: Config, req: any): Promise<Round>
         'Cookie': config.workstationJwt
       }
     } else {
-      const auth = new GoogleAuth({
-        scopes: 'https://www.googleapis.com/auth/cloud-platform'
-      });
-      const client = await auth.getClient();
-      const { token } = await client.getAccessToken();
+      const token = await generateIdToken(config)
       console.log(token)
       headers = {
         'Content-Type': 'application/json',
-        'Cookie': `WorkstationJwt=${token}` 
+        'Authorization': `Bearer ${token}` 
       }
     }
 
