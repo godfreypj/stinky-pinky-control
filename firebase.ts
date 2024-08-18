@@ -22,7 +22,7 @@ async function getFirebaseServiceAccountKey() {
     // Retrieve the key from Secret Manager in deployed environments
     try {
       const [version] = await client.accessSecretVersion({
-        name: `projects/${process.env.PROJECT_ID}/secrets/STINKY_PINKY_FIREBASE_KEY/versions/latest`,
+        name: `projects/stinky-pinky-app/secrets/STINKY_PINKY_FIREBASE_KEY/versions/latest`,
       });
       const payload = version.payload?.data?.toString();
       if (!payload) {
