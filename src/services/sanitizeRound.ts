@@ -1,8 +1,10 @@
+// src/services/sanitizeRound.ts
+
 import { db } from '../../firebase';
 import { Round } from '../interfaces/round';
 
 
-export const roundExists = async (round: Round, collectionName: string): Promise<boolean> => {
+export const isRoundUnique = async (round: Round, collectionName: string): Promise<boolean> => {
     try {
         // Query for documents where either word matches in either position
         const querySnapshot = await db.collection(collectionName)

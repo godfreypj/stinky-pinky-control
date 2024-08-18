@@ -1,4 +1,5 @@
 // src/services/newRound.ts
+
 import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { Round } from '../interfaces/round';
@@ -7,7 +8,7 @@ import { ApiRequestError } from '../utils/errors';
 
 dotenv.config();
 
-export const generateNewRound = async (config: Config): Promise<Round> => {
+export const generateNewRound = async (config: Config, req: any): Promise<Round> => {
   try {
     const apiUrl = config.apiUrl;
     const workstationJwt = config.workstationJwt;
@@ -20,7 +21,7 @@ export const generateNewRound = async (config: Config): Promise<Round> => {
       baseURL: apiUrl,
       headers: {
         'Content-Type': 'application/json',
-        'Cookie': workstationJwt
+        ...(workstationJwt ? { 'Cookie': workstationJwt } : { 'Cookie': req.headers.cookies })
       },
       withCredentials: true,
     });

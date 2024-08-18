@@ -1,25 +1,38 @@
-class ApiRequestError extends Error {
-    constructor(message: string) {
-      super(message);
-      this.name = 'ApiRequestError';
-    }
+// src/utils/errors.ts
+
+class CustomError extends Error {
+  env: string;
+  api: string;
+
+  constructor(message: string) {
+    super(message);
+    this.env = process.env.PROJECT_ENV || 'unknown';
+    this.api = process.env.SP_BRAIN || 'unknown';
   }
-  
-class InvalidApiResponseError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'InvalidApiResponseError';
-    }
 }
 
-class ConfigLoadingError extends Error {
+class ApiRequestError extends CustomError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ApiRequestError';
+  }
+}
+
+class InvalidApiResponseError extends CustomError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidApiResponseError';
+  }
+}
+
+class ConfigLoadingError extends CustomError {
   constructor(message: string) {
     super(message);
     this.name = 'ConfigLoadingError';
   }
 }
 
-class FirebaseInitError extends Error {
+class FirebaseInitError extends CustomError {
   constructor(message: string) {
     super(message);
     this.name = 'FirebaseInitError';

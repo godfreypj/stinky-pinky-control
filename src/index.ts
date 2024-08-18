@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import cors from "cors";
 import { generateNewRound } from './services/newRound';
 import { Round } from './interfaces/round';
-import { roundExists } from './services/sanitizeRound';
+import { isRoundUnique } from './services/sanitizeRound';
 import { ApiRequestError, ConfigLoadingError, InvalidApiResponseError } from './utils/errors';
 import { loadAndInitializeConfig } from './utils/loadConfig';
 
@@ -26,8 +26,8 @@ async function startServer() {
         const database = config.db;
     
         while (!isUnique) {
-          round = await generateNewRound(config);
-          isUnique = !(await roundExists(round, roundCollection));
+          round = await generateNewRound(config, req);
+          isUnique = !(await isRoundUnique(round, roundCollection));
         }
     
         if (round) {
@@ -51,10 +51,10 @@ async function startServer() {
 
     const port = parseInt(process.env.PORT || '3000');
     app.listen(port, () => {
-      console.log(`listening on port ${port}`);
+      console.log(`Listening on port: ${port}`);
     });
   } catch (error) {
-    console.error('Critical error during startup:', error);
+    console.error('Critical error during startup: ', error);
     process.exit(1);
   }
 }
