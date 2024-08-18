@@ -31,6 +31,7 @@ export const generateNewRound = async (config: Config, req: any): Promise<Round>
       });
       const client = await auth.getClient();
       const { token } = await client.getAccessToken();
+      console.log(token)
       headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}` 
