@@ -24,7 +24,7 @@ async function startServer() {
     
         while (!isUnique) {
           round = await generateNewRound(config);
-          isUnique = !(await isRoundUnique(round, config.roundCollection));
+          isUnique = await isRoundUnique(round, config.roundCollection);
         }
     
         if (round) {
