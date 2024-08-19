@@ -31,14 +31,10 @@ export const generateNewRound = async (config: Config): Promise<Round> => {
         'Cookie': config.workstationJwt
       }
     } else { // Deployed request, get a real token from the service
-      try{
-        const token = await generateIdToken(config)
-        headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        }
-      } catch (error) {
-        throw error
+      const token = await generateIdToken(config)
+      headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
       }
     }
 

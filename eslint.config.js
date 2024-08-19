@@ -17,7 +17,7 @@ module.exports = [
       ignores: [  // Use 'ignores' instead of 'ignorePatterns'
           "dist/**/*",
           "firebase.ts",
-          "eslint.config.js"
+          "*.config.js"
       ],
   },
 ];
