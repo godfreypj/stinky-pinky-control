@@ -3,6 +3,7 @@
 import * as admin from 'firebase-admin';
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import * as dotenv from 'dotenv';
+import { FirebaseError } from './src/utils/errors';
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ async function getFirebaseServiceAccountKey() {
     // Retrieve the key from the environment variable in local development
     const keyJson = process.env.STINKY_PINKY_FIREBASE_KEY;
     if (!keyJson) {
-      throw new Error('STINKY_PINKY_FIREBASE_KEY environment variable not set in local environment');
+      throw new FirebaseError('STINKY_PINKY_FIREBASE_KEY environment variable not set in local environment');
     }
     return JSON.parse(keyJson);
   } else {
@@ -26,7 +27,7 @@ async function getFirebaseServiceAccountKey() {
       });
       const payload = version.payload?.data?.toString();
       if (!payload) {
-        throw new Error('Secret payload is empty or undefined');
+        throw new FirebaseError('Secret payload is empty or undefined');
       }
       return JSON.parse(payload);
     } catch (error) {
