@@ -43,6 +43,54 @@ describe('generateNewRound', () => {
       });
     });
 
+    it('should fetch a new round successfully in a production environment', async () => {
+      // Mock config for production environment
+      const mockConfigProd: Config = {
+          ...mockConfig,
+          projectEnv: 'production',
+      };
+
+      // Mock successful token generation
+      const mockToken = 'mock_generated_token';
+      (generateIdToken as jest.MockedFunction<typeof generateIdToken>).mockResolvedValueOnce(mockToken);
+
+      // Mock successful API response
+      const mockResponse = {
+          data: {
+              text: {
+                  word1: 'grape',
+                  word2: 'orange',
+                  clue1: 'purple fruit',
+                  clue2: 'citrus fruit',
+              },
+          },
+      };
+      (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValueOnce(mockResponse);
+
+      const round = await generateNewRound(mockConfigProd);
+
+      // Assert that generateIdToken was called
+      expect(generateIdToken).toHaveBeenCalledWith(mockConfigProd);
+
+      // Assert the expected API call with Authorization header
+      expect(axios.get).toHaveBeenCalledWith('https://example.com/api/generate', {
+          baseURL: mockConfigProd.apiUrl,
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${mockToken}`,
+          },
+          withCredentials: true,
+      });
+
+      // Assert the returned round data
+      expect(round).toEqual({
+          word1: 'grape',
+          word2: 'orange',
+          clue1: 'purple fruit',
+          clue2: 'citrus fruit',
+      });
+  });
+
     // Sad path, can't generate a token
     it('should throw an ApiRequestError if generateIdToken throws an error', async () => {
         // Mock config for non-local environment
@@ -76,4 +124,23 @@ describe('generateNewRound', () => {
           'API returned an error: Some error message from the API'
         );
       });
+      it('should throw error when projectEnv is "local" and no jwt present', async () => {
+        const mockResponse = {
+            data: {
+                text: {
+                    word1: 'apple',
+                    word2: 'banana',
+                    clue1: 'fruit',
+                    clue2: 'yellow',
+                },
+            },
+        };
+        (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValueOnce(mockResponse);
+
+        mockConfig.workstationJwt = '';
+
+        await expect(generateNewRound(mockConfig)).rejects.toThrow(
+            'Unknown API error: Error: WORKSTATION_JWT environment variable not set in local environment'
+        );
+    });
   });
