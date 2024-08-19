@@ -19,10 +19,6 @@ export const generateNewRound = async (config: Config): Promise<Round> => {
     const apiUrl = config.apiUrl;
     const projectEnv = config.projectEnv;
 
-    if (!apiUrl) {
-      throw new Error('API_SERVICE environmental variable not set');
-    }
-
     let headers = {}
 
     // Local request, put the JWT into the Cookies
@@ -35,10 +31,14 @@ export const generateNewRound = async (config: Config): Promise<Round> => {
         'Cookie': config.workstationJwt
       }
     } else { // Deployed request, get a real token from the service
-      const token = await generateIdToken(config)
-      headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` 
+      try{
+        const token = await generateIdToken(config)
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        }
+      } catch (error) {
+        throw error
       }
     }
 
@@ -65,10 +65,10 @@ export const generateNewRound = async (config: Config): Promise<Round> => {
     return round; 
 
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new ApiRequestError(`Error fetching data from API: ${error.message}`);
+    if(error instanceof ApiRequestError) {
+      throw error
     } else {
-      throw new Error('Error creating new round: ' + error);
+      throw new Error("Unknown API error: " + error)
     }
   }
 };
