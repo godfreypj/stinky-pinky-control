@@ -30,7 +30,7 @@ async function startServer() {
     
         if (round) {
           try {
-            const docRef = await writeRound(round, config)
+            await writeRound(round, config)
             const threadsApiResponse = await postThreads(round, config)
             res.send("Succussful POST: " + threadsApiResponse);
           } catch (error) {
