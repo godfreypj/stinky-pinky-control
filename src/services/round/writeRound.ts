@@ -1,6 +1,6 @@
-import { Round } from '../interfaces/round';
-import { Config } from '../interfaces/config'
-import { FirebaseError } from '../utils/errors';
+import { Round } from '../../interfaces/round';
+import { Config } from '../../interfaces/config'
+import { FirebaseError } from '../../utils/errors';
 import { DocumentData, DocumentReference } from 'firebase-admin/firestore';
 
 /**

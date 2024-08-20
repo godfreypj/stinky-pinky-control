@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { generateNewRound } from '../src/services/newRound';
+import { generateNewRound } from '../src/services/round/newRound';
 import { Config } from '../src/interfaces/config';
 import { ApiRequestError } from '../src/utils/errors';
 import { Firestore } from 'firebase-admin/firestore';
@@ -12,11 +12,13 @@ jest.mock('../src/utils/token');
 describe('generateNewRound', () => {
     // Mock config object for tests
     const mockConfig: Config = {
-        apiUrl: 'https://example.com/',
-        projectEnv: 'local',
-        workstationJwt: 'mock_jwt_token',
-        roundCollection: '',
-        db: new Firestore
+      apiUrl: 'https://example.com/',
+      projectEnv: 'local',
+      workstationJwt: 'mock_jwt_token',
+      roundCollection: '',
+      db: new Firestore,
+      threadsToken: '',
+      threadsApi: ''
     };
   
     // Happy Path

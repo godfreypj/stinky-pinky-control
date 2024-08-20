@@ -1,10 +1,10 @@
 // src/services/newRound.ts
 
 import axios from 'axios';
-import { Round } from '../interfaces/round';
-import { Config } from '../interfaces/config'
-import { ApiRequestError } from '../utils/errors';
-import { generateIdToken } from '../utils/token';
+import { Round } from '../../interfaces/round';
+import { Config } from '../../interfaces/config'
+import { ApiRequestError } from '../../utils/errors';
+import { generateIdToken } from '../../utils/token';
 
 /**
  * Given the applications config, query the Brain application for a new round.

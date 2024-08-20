@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from "cors";
-import { generateNewRound } from './services/newRound';
+import { generateNewRound } from './services/round/newRound';
 import { Round } from './interfaces/round';
-import { isRoundUnique } from './services/sanitizeRound';
+import { isRoundUnique } from './services/round/sanitizeRound';
 import { ApiRequestError, InvalidApiResponseError } from './utils/errors';
 import { loadAndInitializeConfig } from './utils/loadConfig';
-import { writeRound } from './services/writeRound';
+import { writeRound } from './services/round/writeRound';
+import { postThreads } from './services/threads/postThread';
 
 const app = express();
 app.use(cors());
@@ -30,7 +31,8 @@ async function startServer() {
         if (round) {
           try {
             const docRef = await writeRound(round, config)
-            res.send("Document written with ID: " + docRef.id);
+            const threadsApiResponse = await postThreads(round, config)
+            res.send("Succussful POST: " + threadsApiResponse);
           } catch (error) {
             res.send("Error adding document: " + error);
           }

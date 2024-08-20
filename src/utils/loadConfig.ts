@@ -18,7 +18,7 @@ export async function loadAndInitializeConfig() {
     dotenv.config();
 
     // Check for required environment variables
-    const requiredEnvVars = ['SP_BRAIN', 'WORKSTATION_JWT', 'PROJECT_ENV'];
+    const requiredEnvVars = ['SP_BRAIN', 'WORKSTATION_JWT', 'PROJECT_ENV', 'THREADS_TOKEN'];
     for (const varName of requiredEnvVars) {
       if (!process.env[varName]) {
         throw new ConfigLoadingError(`Missing required environment variable: ${varName}`);
@@ -38,7 +38,9 @@ export async function loadAndInitializeConfig() {
       workstationJwt: process.env.WORKSTATION_JWT as string,
       projectEnv: process.env.PROJECT_ENV as string,
       roundCollection: `stinky-pinky-rounds-${process.env.PROJECT_ENV}`,
-      db: db
+      db: db,
+      threadsToken: process.env.THREADS_TOKEN as string,
+      threadsApi: process.env.THREADS_API as string
     };
     return appConfig;
 

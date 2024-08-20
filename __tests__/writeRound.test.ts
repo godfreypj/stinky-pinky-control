@@ -1,4 +1,4 @@
-import { writeRound } from '../src/services/writeRound';
+import { writeRound } from '../src/services/round/writeRound';
 import { FirebaseError } from '../src/utils/errors';
 import { Config } from '../src/interfaces/config';
 import { Round } from '../src/interfaces/round';
@@ -24,7 +24,9 @@ describe('writeRound', () => {
             } as any,
             apiUrl: '',
             workstationJwt: '',
-            projectEnv: ''
+            projectEnv: '',
+            threadsToken: '',
+            threadsApi: '',
         };
 
         mockRound = {

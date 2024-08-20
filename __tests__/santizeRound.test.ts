@@ -1,4 +1,4 @@
-import { isRoundUnique } from '../src/services/sanitizeRound';
+import { isRoundUnique } from '../src/services/round/sanitizeRound';
 import { FirebaseError } from '../src/utils/errors';
 import { db } from '../firebase';
 
