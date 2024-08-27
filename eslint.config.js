@@ -17,7 +17,8 @@ module.exports = [
       ignores: [  // Use 'ignores' instead of 'ignorePatterns'
           "dist/**/*",
           "firebase.ts",
-          "*.config.js"
+          "*.config.js",
+          "coverage/**/*"
       ],
   },
 ];

@@ -6,7 +6,8 @@ import { isRoundUnique } from './services/round/sanitizeRound';
 import { ApiRequestError, InvalidApiResponseError } from './utils/errors';
 import { loadAndInitializeConfig } from './utils/loadConfig';
 import { writeRound } from './services/round/writeRound';
-import { postThreads } from './services/threads/postThread';
+import { postThreadsCont } from './services/threads/postThreadsCont';
+import { postThread } from './services/threads/postThread';
 
 const app = express();
 app.use(cors());
@@ -30,9 +31,13 @@ async function startServer() {
     
         if (round) {
           try {
-            await writeRound(round, config)
-            const threadsApiResponse = await postThreads(round, config)
-            res.send("Succussful POST: " + threadsApiResponse);
+            // Create a threads container
+            const threadsContainerResponse = await postThreadsCont(round, config)
+            // Post the thread
+            const threadsPostResponseId = await postThread(threadsContainerResponse, config)
+            // Write the info to the database
+            const docRefId = await writeRound(round, threadsPostResponseId, config)
+            res.send("Successful Round Created, Posted & Saved: " + docRefId);
           } catch (error) {
             res.send("Error adding document: " + error);
           }

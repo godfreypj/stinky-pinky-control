@@ -2,10 +2,12 @@ import { writeRound } from '../src/services/round/writeRound';
 import { FirebaseError } from '../src/utils/errors';
 import { Config } from '../src/interfaces/config';
 import { Round } from '../src/interfaces/round';
+import { DbObject } from '../src/interfaces/dbObject';
 
 describe('writeRound', () => {
     let mockConfig: Config;
     let mockRound: Round;
+    let mockDbObject: DbObject;
     let collectionMock: jest.Mock;
     let addMock: jest.Mock;
 
@@ -21,12 +23,13 @@ describe('writeRound', () => {
             roundCollection: 'testRounds',
             db: {
                 collection: collectionMock
-            } as any,
+            } as unknown as FirebaseFirestore.Firestore,
             apiUrl: '',
             workstationJwt: '',
             projectEnv: '',
             threadsToken: '',
-            threadsApi: '',
+            threadsContApi: '',
+            threadsPostApi: ''
         };
 
         mockRound = {
@@ -35,23 +38,31 @@ describe('writeRound', () => {
             word2: 'banana',
             clue2: 'yellow fruit'
         };
+
+        mockDbObject = {
+            "round": {
+                "clue1": "red fruit", "clue2": "yellow fruit", "word1": "apple", "word2": "banana"}, 
+                "threadsApiResponseId": "mock"
+            }
     });
 
     it('should successfully write a round to the database and return a DocumentReference', async () => {
-        const mockDocRef = {} as any; 
+        const mockDocRef = {} as JSON; 
+        const mockThreadsApiResponse = "mock";
         addMock.mockResolvedValueOnce(mockDocRef);
 
-        const result = await writeRound(mockRound, mockConfig);
+        const result = await writeRound(mockRound, mockThreadsApiResponse, mockConfig);
 
         expect(collectionMock).toHaveBeenCalledWith(mockConfig.roundCollection);
-        expect(addMock).toHaveBeenCalledWith(mockRound);
+        expect(addMock).toHaveBeenCalledWith(mockDbObject);
         expect(result).toBe(mockDocRef);
     });
 
     it('should throw a FirebaseError if there is an error writing to the database', async () => {
         const errorMessage = 'Simulated Firestore error';
+        const mockThreadsApiResponse = "mock";
         addMock.mockRejectedValueOnce(new Error(errorMessage));
     
-        await expect(writeRound(mockRound, mockConfig)).rejects.toThrow(new FirebaseError(`Error adding document: Error: ${errorMessage}`));
+        await expect(writeRound(mockRound, mockThreadsApiResponse, mockConfig)).rejects.toThrow(new FirebaseError(`Error adding document: Error: ${errorMessage}`));
     });
 });

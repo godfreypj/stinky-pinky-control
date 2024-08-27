@@ -18,7 +18,8 @@ describe('generateNewRound', () => {
       roundCollection: '',
       db: new Firestore,
       threadsToken: '',
-      threadsApi: ''
+      threadsContApi: '',
+      threadsPostApi: ''
     };
   
     // Happy Path

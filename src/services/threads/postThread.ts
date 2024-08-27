@@ -1,29 +1,23 @@
 // src/services/postThreads.ts
 
 import axios from 'axios';
-import { Round } from '../../interfaces/round';
 import { InvalidApiResponseError } from '../../utils/errors';
 import { Config } from '../../interfaces/config';
 
 /**
- * Given a Round object, post a formatted message to Threads.
+ * Given a container ID wait 30 seconds, then post the thread.
  * 
- * @param round - The Round object containing data to be included in the post
+ * @param id - The container ID
  * @param config - Configuration object including the Threads access token
  * @returns The response data from the Threads API
  * @throws InvalidApiResponseError if there's an issue posting to Threads
  */
-export const postThreads = async (round: Round, config: Config): Promise<any> => {
-  try {
-    // Extract and format the message from the round object
-    const formattedMessage = `
-      New Round!
-      Clue: ${round.clue1}
-      Clue: ${round.clue2}
-    `;
+export const postThread = async (id: string, config: Config): Promise<string> => {
+    await new Promise(resolve => setTimeout(resolve, 30000));
 
+  try {
     const threadsApiResponse = await axios.post(
-      `${config.threadsApi}text=${encodeURIComponent(formattedMessage)}&media_type=text`,
+      `${config.threadsPostApi}creation_id=${encodeURIComponent(id)}`,
       null,
       {
         headers: {
@@ -33,8 +27,8 @@ export const postThreads = async (round: Round, config: Config): Promise<any> =>
       }
     );
 
-    console.log('Threads API Response:', threadsApiResponse.data);
-    return threadsApiResponse.data;
+    console.log('Successful Threads POST:', threadsApiResponse.data.id);
+    return threadsApiResponse.data.id;
 
   } catch (error) {
     const errorMessage = `Error posting to Threads: ${error?.response?.data?.error?.message || error.message}`;
