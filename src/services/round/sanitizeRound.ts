@@ -29,6 +29,8 @@ export const isRoundUnique = async (round: Round, collectionName: string): Promi
         if (querySnapshot.empty && querySnapshot2.empty) {
             console.log("Successfully created new Round: " + round.toString)
             return true;
+        } else {
+            return false;
         }
     } catch (error) {
         throw new FirebaseError('Error sanitizing round: ' + error);
