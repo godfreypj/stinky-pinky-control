@@ -1,13 +1,15 @@
+// __tests__/round/newRound.test.ts
+
 import axios from 'axios';
-import { generateNewRound } from '../src/services/round/newRound';
-import { Config } from '../src/interfaces/config';
-import { ApiRequestError } from '../src/utils/errors';
+import { generateNewRound } from '../../src/services/round/newRound';
+import { Config } from '../../src/interfaces/config';
+import { ApiRequestError } from '../../src/utils/errors';
 import { Firestore } from 'firebase-admin/firestore';
-import { generateIdToken } from '../src/utils/token';
+import { generateIdToken } from '../../src/utils/token';
 
 // Mocks
 jest.mock('axios');
-jest.mock('../src/utils/token');
+jest.mock('../../src/utils/token');
 
 describe('generateNewRound', () => {
     // Mock config object for tests

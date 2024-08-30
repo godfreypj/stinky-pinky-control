@@ -1,9 +1,11 @@
-import { isRoundUnique } from '../src/services/round/sanitizeRound';
-import { FirebaseError } from '../src/utils/errors';
-import { db } from '../firebase';
+// __tests__/round/sanitizeRound.test.ts
+
+import { isRoundUnique } from '../../src/services/round/sanitizeRound';
+import { FirebaseError } from '../../src/utils/errors';
+import { db } from '../../firebase';
 
 // Mock the Firestore collection and query methods
-jest.mock('../firebase', () => ({
+jest.mock('../../firebase', () => ({
   db: {
     collection: jest.fn(() => ({
       where: jest.fn().mockReturnThis(),

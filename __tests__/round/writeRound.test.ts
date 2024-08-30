@@ -1,8 +1,10 @@
-import { writeRound } from '../src/services/round/writeRound';
-import { FirebaseError } from '../src/utils/errors';
-import { Config } from '../src/interfaces/config';
-import { Round } from '../src/interfaces/round';
-import { DbObject } from '../src/interfaces/dbObject';
+// __tests__/round/writeRound.test.ts
+
+import { writeRound } from '../../src/services/round/writeRound';
+import { FirebaseError } from '../../src/utils/errors';
+import { Config } from '../../src/interfaces/config';
+import { Round } from '../../src/interfaces/round';
+import { DbObject } from '../../src/interfaces/dbObject';
 
 describe('writeRound', () => {
     let mockConfig: Config;
