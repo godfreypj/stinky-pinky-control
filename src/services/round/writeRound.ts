@@ -30,5 +30,4 @@ export const writeRound = async (round: Round, threadsApiResponseId: string, con
       } catch (error) {
         throw new FirebaseError("Error adding document: " + error);
       }
-
 }

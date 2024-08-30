@@ -46,8 +46,8 @@ describe('writeRound', () => {
             }
     });
 
-    it('should successfully write a round to the database and return a DocumentReference', async () => {
-        const mockDocRef = {} as JSON; 
+    it('should successfully write a round to the database and return a DocumentReferenceId', async () => {
+        const mockDocRef = { id: 'mockId'}; 
         const mockThreadsApiResponse = "mock";
         addMock.mockResolvedValueOnce(mockDocRef);
 
@@ -55,7 +55,7 @@ describe('writeRound', () => {
 
         expect(collectionMock).toHaveBeenCalledWith(mockConfig.roundCollection);
         expect(addMock).toHaveBeenCalledWith(mockDbObject);
-        expect(result).toBe(mockDocRef);
+        expect(result).toBe(mockDocRef.id);
     });
 
     it('should throw a FirebaseError if there is an error writing to the database', async () => {
