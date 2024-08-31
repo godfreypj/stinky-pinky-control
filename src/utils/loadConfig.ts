@@ -40,8 +40,7 @@ export async function loadAndInitializeConfig() {
       roundCollection: `stinky-pinky-rounds-${process.env.PROJECT_ENV}`,
       db: db,
       threadsToken: process.env.THREADS_TOKEN as string,
-      threadsContApi: process.env.THREADS_CONT_API as string,
-      threadsPostApi: process.env.THREADS_POST_API as string
+      threadsApi: process.env.THREADS_API as string
     };
     return appConfig;
 

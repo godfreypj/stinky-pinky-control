@@ -23,7 +23,7 @@ export const postThreadsCont = async (round: Round, config: Config): Promise<str
     `;
 
     const threadsContainerResponse = await axios.post(
-      `${config.threadsContApi}text=${encodeURIComponent(formattedMessage)}&media_type=text`,
+      `${config.threadsApi}me/threads?text=${encodeURIComponent(formattedMessage)}&media_type=text`,
       null,
       {
         headers: {

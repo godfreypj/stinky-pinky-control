@@ -10,14 +10,13 @@ jest.mock('axios'); // Mock axios for controlled API responses
 
 describe('postThread', () => {
   const mockConfig: Config = {
-      threadsPostApi: 'https://example.com/threads/post?',
+      threadsApi: 'https://example.com/threads/post?',
       threadsToken: 'mock_token',
       apiUrl: '',
       workstationJwt: '',
       projectEnv: '',
       roundCollection: '',
-      db: new Firestore,
-      threadsContApi: ''
+      db: new Firestore
   };
   const mockId = 'mock_container_id';
 
@@ -42,7 +41,7 @@ describe('postThread', () => {
     const result = await resultPromise;
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${mockConfig.threadsPostApi}creation_id=${encodeURIComponent(mockId)}`,
+      `${mockConfig.threadsApi}creation_id=${encodeURIComponent(mockId)}`,
       null,
       {
         headers: {

@@ -11,14 +11,13 @@ jest.mock('axios');
 
 describe('postThreadsCont', () => {
   const mockConfig: Config = {
-      threadsContApi: 'https://example.com/threads/container?',
+      threadsApi: 'https://example.com/threads/container?',
       threadsToken: 'mock_token',
       apiUrl: '',
       workstationJwt: '',
       projectEnv: '',
       roundCollection: '',
-      db: new Firestore,
-      threadsPostApi: ''
+      db: new Firestore
   };
   const mockRound: Round = {
       clue1: 'A fruit that is red',
@@ -42,7 +41,7 @@ describe('postThreadsCont', () => {
     `;
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${mockConfig.threadsContApi}text=${encodeURIComponent(expectedFormattedMessage)}&media_type=text`,
+      `${mockConfig.threadsApi}text=${encodeURIComponent(expectedFormattedMessage)}&media_type=text`,
       null,
       {
         headers: {

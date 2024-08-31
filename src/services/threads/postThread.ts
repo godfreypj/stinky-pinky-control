@@ -17,7 +17,7 @@ export const postThread = async (id: string, config: Config): Promise<string> =>
 
   try {
     const threadsApiResponse = await axios.post(
-      `${config.threadsPostApi}creation_id=${encodeURIComponent(id)}`,
+      `${config.threadsApi}me/threads_publish?creation_id=${encodeURIComponent(id)}`,
       null,
       {
         headers: {
