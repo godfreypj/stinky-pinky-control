@@ -1,7 +1,6 @@
 import { Round } from '../../interfaces/round';
 import { Config } from '../../interfaces/config'
 import { FirebaseError } from '../../utils/errors';
-import { DocumentData, DocumentReference } from 'firebase-admin/firestore';
 import { DbObject } from '../../interfaces/dbObject';
 
 /**
@@ -20,6 +19,7 @@ export const writeRound = async (round: Round, threadsApiResponseId: string, con
 
     const dbObject: DbObject = {
         round: round,
+        active: true,
         threadsApiResponseId: threadsApiResponseId
     }
 

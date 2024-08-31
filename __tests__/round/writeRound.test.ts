@@ -30,8 +30,7 @@ describe('writeRound', () => {
             workstationJwt: '',
             projectEnv: '',
             threadsToken: '',
-            threadsContApi: '',
-            threadsPostApi: ''
+            threadsApi: '',
         };
 
         mockRound = {
@@ -43,8 +42,10 @@ describe('writeRound', () => {
 
         mockDbObject = {
             "round": {
-                "clue1": "red fruit", "clue2": "yellow fruit", "word1": "apple", "word2": "banana"}, 
-                "threadsApiResponseId": "mock"
+                "clue1": "red fruit", "clue2": "yellow fruit", "word1": "apple", "word2": "banana"
+            },
+            "active": true,
+            "threadsApiResponseId": "mock"
             }
     });
 
