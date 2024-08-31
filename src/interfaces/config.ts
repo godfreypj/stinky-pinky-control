@@ -6,7 +6,6 @@ export interface Config {
     projectEnv: string;
     roundCollection: string;
     db: FirebaseFirestore.Firestore;
-    threadsContApi: string;
-    threadsPostApi: string;
+    threadsApi: string;
     threadsToken: string;
   }
