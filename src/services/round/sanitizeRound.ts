@@ -27,7 +27,6 @@ export const isRoundUnique = async (round: Round, collectionName: string): Promi
 
         // Return true only if BOTH queries are empty (no matches found)
         if (querySnapshot.empty && querySnapshot2.empty) {
-            console.log("Successfully created new Round: " + round.toString)
             return true;
         } else {
             return false;

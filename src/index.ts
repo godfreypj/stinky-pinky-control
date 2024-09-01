@@ -63,7 +63,6 @@ async function startServer() {
 
         // Get all the active rounds out right now
         const activeRounds = await getActiveRounds(config.roundCollection, config.db);
-        console.log(activeRounds)
     
         if (activeRounds.length > 0) {
           for (const activeRound of activeRounds) {

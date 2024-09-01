@@ -25,7 +25,7 @@ export const writeRound = async (round: Round, threadsApiResponseId: string, con
 
     try {
         const docRef = await database.collection(roundCollection).add(dbObject);
-        console.log("Successful write to database: " + docRef.id)
+        console.log('Successful write to database: ', docRef.id)
         return docRef.id
       } catch (error) {
         throw new FirebaseError("Error adding document: " + error);

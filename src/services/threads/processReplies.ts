@@ -30,9 +30,8 @@ export const processReplies = async (replies: Reply[], activeRound: DbObject, co
     }
 
     if (winner) {
-        const id = await cancelRound(activeRound.threadsApiResponseId, config);
+        await cancelRound(activeRound.threadsApiResponseId, config);
         activeRound.active = false;
-        console.log('Successfully cancelled round: ' + id)
     }
 
   } catch (error) {

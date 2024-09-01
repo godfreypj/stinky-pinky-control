@@ -33,7 +33,7 @@ export const cancelRound = async (
     // Update the 'active' field to false for the found document
     const docRef = snapshot.docs[0].ref;
     const update = await docRef.update({ active: false });
-
+    console.log('Successfully cancelled round: ' + threadsApiResponseId)
     return update;
   } catch (error) {
     throw new FirebaseError('Error cancelling round: ' + error);

@@ -33,7 +33,7 @@ export const postThreadsCont = async (round: Round, config: Config): Promise<str
       }
     );
 
-    console.log('Successful Threads Container Creation:', threadsContainerResponse.data.id);
+    console.log('Successful Threads Container Creation: ', threadsContainerResponse.data.id);
     return threadsContainerResponse.data.id;
 
   } catch (error) {

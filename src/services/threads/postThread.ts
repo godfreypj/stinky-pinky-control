@@ -27,7 +27,7 @@ export const postThread = async (id: string, config: Config): Promise<string> =>
       }
     );
 
-    console.log('Successful Threads POST:', threadsApiResponse.data.id);
+    console.log('Successful Threads POST: ', threadsApiResponse.data.id);
     return threadsApiResponse.data.id;
 
   } catch (error) {
