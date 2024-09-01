@@ -8,6 +8,11 @@ import { loadAndInitializeConfig } from './utils/loadConfig';
 import { writeRound } from './services/round/writeRound';
 import { postThreadsCont } from './services/threads/postThreadsCont';
 import { postThread } from './services/threads/postThread';
+import { getActiveRounds } from './services/round/getActiveRounds';
+import { getThreadReplies } from './services/threads/getThreadReplies';
+import { cancelRound } from './services/round/cancelRound';
+import { isNullOrUndefined } from 'util';
+import { processReplies } from './services/threads/processReplies';
 
 const app = express();
 app.use(cors());
@@ -50,6 +55,29 @@ async function startServer() {
         } else {
         res.status(500).send('Error fetching data from API' + error);
         }
+      }
+    });
+
+    app.get('/active_rounds', async (req, res) => {
+      try {
+
+        // Get all the active rounds out right now
+        const activeRounds = await getActiveRounds(config.roundCollection, config.db);
+        console.log(activeRounds)
+    
+        if (activeRounds.length > 0) {
+          for (const activeRound of activeRounds) {
+            // Get the replies from each round
+            const replies = await getThreadReplies(activeRound.threadsApiResponseId, config);
+            // Check if any of them are a winner
+            processReplies(replies, activeRound, config);
+          }
+          res.json(activeRounds);
+        } else {
+          res.status(404).send('No active rounds found.');
+        }
+      } catch (error) {
+        res.status(500).send('Error fetching active rounds: ' + error); 
       }
     });
 

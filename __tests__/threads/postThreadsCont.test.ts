@@ -41,7 +41,7 @@ describe('postThreadsCont', () => {
     `;
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${mockConfig.threadsApi}text=${encodeURIComponent(expectedFormattedMessage)}&media_type=text`,
+      `${mockConfig.threadsApi}me/threads?text=${encodeURIComponent(expectedFormattedMessage)}&media_type=text`,
       null,
       {
         headers: {

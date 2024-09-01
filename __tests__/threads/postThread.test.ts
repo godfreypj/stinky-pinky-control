@@ -41,7 +41,7 @@ describe('postThread', () => {
     const result = await resultPromise;
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${mockConfig.threadsApi}creation_id=${encodeURIComponent(mockId)}`,
+      `${mockConfig.threadsApi}me/threads_publish?creation_id=${encodeURIComponent(mockId)}`,
       null,
       {
         headers: {
