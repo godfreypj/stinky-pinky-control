@@ -2,7 +2,6 @@
 
 import { getActiveRounds } from '../../src/services/round/getActiveRounds';
 import { FirebaseError } from '../../src/utils/errors';
-import { DbObject } from '../../src/interfaces/dbObject';
 
 describe('getActiveRounds', () => {
     let collectionMock: jest.Mock;

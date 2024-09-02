@@ -10,8 +10,6 @@ import { postThreadsCont } from './services/threads/postThreadsCont';
 import { postThread } from './services/threads/postThread';
 import { getActiveRounds } from './services/round/getActiveRounds';
 import { getThreadReplies } from './services/threads/getThreadReplies';
-import { cancelRound } from './services/round/cancelRound';
-import { isNullOrUndefined } from 'util';
 import { processReplies } from './services/threads/processReplies';
 
 const app = express();
