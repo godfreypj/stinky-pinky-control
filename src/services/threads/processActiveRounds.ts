@@ -1,8 +1,6 @@
 // src/services/threads/processReplies.ts
 
 import { Config } from '../../interfaces/config';
-import { DbObject } from '../../interfaces/dbObject';
-import { Reply } from '../../interfaces/reply';
 import { cancelRound } from '../round/cancelRound';
 import { getActiveRounds } from '../round/getActiveRounds';
 import { getThreadReplies } from './getThreadReplies';
@@ -32,7 +30,7 @@ export const processActiveRounds = async (config: Config): Promise<void> => {
         const replies = await getThreadReplies(activeRound.threadsApiResponseId, config);
 
         // Determind the winner
-        let winner = [];
+        const winner = [];
         // Iterate over the replies, and check if any of them contain the round words
         for (const reply of replies) {
           if (
