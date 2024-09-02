@@ -3,4 +3,5 @@
 export interface Reply {
     text: string;
     id: string;
+    time: string;
 }

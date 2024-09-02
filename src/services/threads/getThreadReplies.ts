@@ -16,16 +16,17 @@ import { Reply } from '../../interfaces/reply';
 export const getThreadReplies = async (threadPostId: string, config: Config): Promise<Reply[]> => {
   try {
     const threadsApiResponse = await axios.get(
-      `${config.threadsApi}${encodeURIComponent(threadPostId)}/replies?fields=text`,
+      `${config.threadsApi}${encodeURIComponent(threadPostId)}/replies?fields=text,timestamp`,
       {
         headers: {
           'Authorization': `Bearer ${config.threadsToken}`, 
         }
       }
     );
-    const replies = threadsApiResponse.data.data.map((reply: { text: string; id: string }) => ({
+    const replies = threadsApiResponse.data.data.map((reply: { text: string; id: string; time: string; }) => ({
       text: reply.text,
-      id: reply.id
+      id: reply.id,
+      time: reply.time
     }));
     return replies;
 

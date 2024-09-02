@@ -22,12 +22,18 @@ async function startServer() {
     console.log('Running in env: ', config.projectEnv)
     console.log('Writing to: ', config.roundCollection)
 
-    app.get('/', async (req, res) => {
+    const port = parseInt(process.env.PORT || '3000');
+    app.listen(port, () => {
+      console.log(`Listening on port: ${port}`);
+    });
+
+    app.get('/post_new_round', async (req, res) => {
       try {
         let round: Round | null = null;
         let isUnique = false;
     
         while (!isUnique) {
+          // TODO encapuslate all of this inside generateNewRound
           round = await generateNewRound(config);
           isUnique = await isRoundUnique(round, config.roundCollection);
         }
@@ -38,7 +44,7 @@ async function startServer() {
             const threadsContainerResponse = await postThreadsCont(round, config)
             // Post the thread
             const threadsPostResponseId = await postThread(threadsContainerResponse, config)
-            // Write the info to the database
+            // TODO encapuslate all of this inside writeRound
             const docRefId = await writeRound(round, threadsPostResponseId, config)
             res.send("Successful Round Created, Posted & Saved: " + docRefId);
           } catch (error) {
@@ -56,17 +62,14 @@ async function startServer() {
       }
     });
 
-    app.get('/active_rounds', async (req, res) => {
+    app.get('/process_active_rounds', async (req, res) => {
       try {
-
         // Get all the active rounds out right now
         const activeRounds = await getActiveRounds(config.roundCollection, config.db);
-    
         if (activeRounds.length > 0) {
           for (const activeRound of activeRounds) {
-            // Get the replies from each round
             const replies = await getThreadReplies(activeRound.threadsApiResponseId, config);
-            // Check if any of them are a winner
+            // TODO encapuslate all of this inside processReplies and change it to processActiveRounds
             processReplies(replies, activeRound, config);
           }
           res.json(activeRounds);
@@ -78,10 +81,6 @@ async function startServer() {
       }
     });
 
-    const port = parseInt(process.env.PORT || '3000');
-    app.listen(port, () => {
-      console.log(`Listening on port: ${port}`);
-    });
   } catch (error) {
     console.error('Critical error during startup: ', error);
     process.exit(1);

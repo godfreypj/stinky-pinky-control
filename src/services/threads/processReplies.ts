@@ -4,6 +4,7 @@ import { Config } from '../../interfaces/config';
 import { DbObject } from '../../interfaces/dbObject';
 import { Reply } from '../../interfaces/reply';
 import { cancelRound } from '../round/cancelRound';
+import { replyToWinner } from './replyToWinner';
 
 /**
  * Given an Array of Replies and an Active Round determine if any of the replies
@@ -18,20 +19,31 @@ import { cancelRound } from '../round/cancelRound';
  */
 export const processReplies = async (replies: Reply[], activeRound: DbObject, config: Config): Promise<void> => {
   try {
-    let winner = false;
+    let winner = [];
     // Iterate over the replies, and check if any of them contain the round words
     for (const reply of replies) {
       if (
         reply.text.toLowerCase().includes(activeRound.round.word1.toLowerCase()) &&
         reply.text.toLowerCase().includes(activeRound.round.word2.toLowerCase())
       ) {
-        winner = true;
+        winner.push(reply);
       }
     }
 
-    if (winner) {
-        await cancelRound(activeRound.threadsApiResponseId, config);
-        activeRound.active = false;
+    if (winner.length > 0) {
+
+      await cancelRound(activeRound.threadsApiResponseId, config);
+
+      const winnerByTimestamp = winner.sort((a, b) => {
+        const dateA = new Date(a.time);
+        const dateB = new Date(b.time);
+        return dateA.getTime() - dateB.getTime(); 
+      })[0];
+      
+      await replyToWinner(winnerByTimestamp, config);
+
+    } else {
+      return;
     }
 
   } catch (error) {
