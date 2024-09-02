@@ -6,10 +6,14 @@ import { Config } from '../../src/interfaces/config';
 import { ApiRequestError } from '../../src/utils/errors';
 import { Firestore } from 'firebase-admin/firestore';
 import { generateIdToken } from '../../src/utils/token';
+import { isRoundUnique } from '../../src/services/round/sanitizeRound';
 
 // Mocks
 jest.mock('axios');
 jest.mock('../../src/utils/token');
+jest.mock('../../src/services/round/sanitizeRound');
+
+const mockedIsRoundUnique = isRoundUnique as jest.MockedFunction<typeof isRoundUnique>;
 
 describe('generateNewRound', () => {
     // Mock config object for tests
@@ -37,7 +41,10 @@ describe('generateNewRound', () => {
         },
       });
   
+      mockedIsRoundUnique.mockResolvedValueOnce(true)
       const round = await generateNewRound(mockConfig);
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
   
       expect(round).toEqual({
         word1: 'apple',
@@ -71,6 +78,7 @@ describe('generateNewRound', () => {
       };
       (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValueOnce(mockResponse);
 
+      mockedIsRoundUnique.mockResolvedValueOnce(true)
       const round = await generateNewRound(mockConfigProd);
 
       // Assert that generateIdToken was called

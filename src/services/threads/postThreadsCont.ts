@@ -37,7 +37,7 @@ export const postThreadsCont = async (round: Round, config: Config): Promise<str
     return threadsContainerResponse.data.id;
 
   } catch (error) {
-    const errorMessage = `Error creating container: ${error?.response?.data?.error?.message || error.message}`;
+    const errorMessage = `Error creating container: ${error}`;
     throw new InvalidApiResponseError(errorMessage);
   }
 };

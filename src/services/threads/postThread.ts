@@ -31,7 +31,7 @@ export const postThread = async (id: string, config: Config): Promise<string> =>
     return threadsApiResponse.data.id;
 
   } catch (error) {
-    const errorMessage = `Error posting to Threads: ${error?.response?.data?.error?.message || error.message}`;
+    const errorMessage = `Error posting to Threads: ${error}`;
     throw new InvalidApiResponseError(errorMessage);
   }
 };

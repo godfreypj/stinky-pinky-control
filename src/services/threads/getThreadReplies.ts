@@ -31,7 +31,7 @@ export const getThreadReplies = async (threadPostId: string, config: Config): Pr
     return replies;
 
   } catch (error) {
-    const errorMessage = `Error getting replies from Threads: ${error?.response?.data?.error?.message || error.message}`;
+    const errorMessage = `Error getting replies from Threads: ${error}`;
     throw new InvalidApiResponseError(errorMessage);
   }
 };

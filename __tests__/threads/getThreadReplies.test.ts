@@ -34,7 +34,7 @@ describe('getThreadReplies', () => {
     const result = await getThreadReplies(mockThreadPostId, mockConfig);
 
     expect(axios.get).toHaveBeenCalledWith(
-      `${mockConfig.threadsApi}${mockThreadPostId}/replies?fields=text`,
+      `${mockConfig.threadsApi}${mockThreadPostId}/replies?fields=text,timestamp`,
       {
         headers: {
           Authorization: `Bearer ${mockConfig.threadsToken}`,
@@ -53,26 +53,6 @@ describe('getThreadReplies', () => {
     ]);
   });
 
-  it('should throw InvalidApiResponseError on axios error', async () => {
-    const mockError = {
-      response: {
-        data: {
-          error: {
-            message: 'Mock Threads error message',
-          },
-        },
-      },
-    };
-    (axios.get as jest.Mock).mockRejectedValue(mockError);
-
-    await expect(getThreadReplies(mockThreadPostId, mockConfig)).rejects.toThrow(
-      InvalidApiResponseError
-    );
-    await expect(getThreadReplies(mockThreadPostId, mockConfig)).rejects.toThrow(
-      'Error getting replies from Threads: Mock Threads error message'
-    );
-  });
-
   it('should throw InvalidApiResponseError on generic error', async () => {
     (axios.get as jest.Mock).mockRejectedValue(new Error('Generic error'));
 
@@ -80,7 +60,7 @@ describe('getThreadReplies', () => {
       InvalidApiResponseError
     );
     await expect(getThreadReplies(mockThreadPostId, mockConfig)).rejects.toThrow(
-      'Error getting replies from Threads: Generic error'
+      'Error getting replies from Threads: Error: Generic error'
     );
   });
 });

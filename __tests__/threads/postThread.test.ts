@@ -53,25 +53,6 @@ describe('postThread', () => {
     expect(result).toBe('mock_thread_id');
   });
 
-  it('should throw InvalidApiResponseError on axios error', async () => {
-    const mockError = {
-      response: {
-        data: {
-          error: {
-            message: 'Mock Threads error message',
-          },
-        },
-      },
-    };
-    (axios.post as jest.Mock).mockRejectedValueOnce(mockError);
-
-    const resultPromise = postThread(mockId, mockConfig);
-    jest.advanceTimersByTime(30000);
-
-    await expect(resultPromise).rejects.toThrow(InvalidApiResponseError);
-    await expect(resultPromise).rejects.toThrow('Error posting to Threads: Mock Threads error message');
-  });
-
   it('should throw InvalidApiResponseError on generic error', async () => {
     (axios.post as jest.Mock).mockRejectedValueOnce(new Error('Generic error'));
 
@@ -79,6 +60,6 @@ describe('postThread', () => {
     jest.advanceTimersByTime(30000);
 
     await expect(resultPromise).rejects.toThrow(InvalidApiResponseError);
-    await expect(resultPromise).rejects.toThrow('Error posting to Threads: Generic error');
+    await expect(resultPromise).rejects.toThrow('Error posting to Threads: Error: Generic error');
   });
 });

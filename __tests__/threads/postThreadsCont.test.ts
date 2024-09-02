@@ -53,26 +53,10 @@ describe('postThreadsCont', () => {
     expect(result).toBe('mock_container_id');
   });
 
-  it('should throw InvalidApiResponseError on axios error', async () => {
-    const mockError = {
-      response: {
-        data: {
-          error: {
-            message: 'Mock Threads error message',
-          },
-        },
-      },
-    };
-    (axios.post as jest.Mock).mockRejectedValue(mockError);
-
-    await expect(postThreadsCont(mockRound, mockConfig)).rejects.toThrow(InvalidApiResponseError);
-    await expect(postThreadsCont(mockRound, mockConfig)).rejects.toThrow('Error creating container: Mock Threads error message');
-  });
-
   it('should throw InvalidApiResponseError on generic error', async () => {
     (axios.post as jest.Mock).mockRejectedValue(new Error('Generic error'));
 
     await expect(postThreadsCont(mockRound, mockConfig)).rejects.toThrow(InvalidApiResponseError);
-    await expect(postThreadsCont(mockRound, mockConfig)).rejects.toThrow('Error creating container: Generic error');
+    await expect(postThreadsCont(mockRound, mockConfig)).rejects.toThrow('Error creating container: Error: Generic error');
   });
 });
