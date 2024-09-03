@@ -27,7 +27,7 @@ export const replyToWinner = async (winner: Reply, config: Config): Promise<stri
 //       }
 //     );
 
-    console.log('Successful Threads POST: ', winner);
+    console.log('Successfully replied to winner: ', winner);
     return 'test';
 
   } catch (error) {

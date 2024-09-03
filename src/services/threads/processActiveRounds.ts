@@ -14,10 +14,10 @@ import { replyToWinner } from './replyToWinner';
  * @param replies - An array of Threads replies
  * @param activeRound - The active round db object
  * @param config - Configuration object including the Threads access token
- * @returns void
+ * @returns string - The status of the active rounds
  * @throws FirebaseError if there's an issue writing to the database
  */
-export const processActiveRounds = async (config: Config): Promise<void> => {
+export const processActiveRounds = async (config: Config): Promise<string> => {
   try {
 
     // Ping the db, get the active rounds
@@ -32,29 +32,37 @@ export const processActiveRounds = async (config: Config): Promise<void> => {
         // Determind the winner
         const winner = [];
         // Iterate over the replies, and check if any of them contain the round words
-        for (const reply of replies) {
-          if (
-            reply.text.toLowerCase().includes(activeRound.round.word1.toLowerCase()) &&
-            reply.text.toLowerCase().includes(activeRound.round.word2.toLowerCase())
-          ) {
-            winner.push(reply);
+        if(replies.length > 0) {
+          for (const reply of replies) {
+            if (
+              reply.text.toLowerCase().includes(activeRound.round.word1.toLowerCase()) &&
+              reply.text.toLowerCase().includes(activeRound.round.word2.toLowerCase())
+            ) {
+              winner.push(reply);
+            }
           }
+          if (winner.length > 0) {
+            await cancelRound(activeRound.threadsApiResponseId, config);
+  
+            const winnerByTimestamp = winner.sort((a, b) => {
+              const dateA = new Date(a.time);
+              const dateB = new Date(b.time);
+              return dateA.getTime() - dateB.getTime(); 
+            })[0];
+        
+            const replyResult = await replyToWinner(winnerByTimestamp, config);
+            return replyResult;
+          } else {
+            return "No Winner Found"
+          }
+        } else {
+          return "No Replies Found"
         }
-        if (winner.length > 0) {
-          await cancelRound(activeRound.threadsApiResponseId, config);
 
-          const winnerByTimestamp = winner.sort((a, b) => {
-            const dateA = new Date(a.time);
-            const dateB = new Date(b.time);
-            return dateA.getTime() - dateB.getTime(); 
-          })[0];
-      
-          await replyToWinner(winnerByTimestamp, config);
-        }
       }
     } else {
       // TODO trigger a new round
-      console.log("No active rounds found.")
+      return "No Active Rounds Found"
     }
 
   } catch (error) {

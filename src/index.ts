@@ -41,7 +41,8 @@ async function startServer() {
 
     app.get('/process_active_rounds', async (req, res) => {
       try {
-        processActiveRounds(config);
+        const result = await processActiveRounds(config);
+        res.send(result);
       } catch (error) {
         if (error instanceof ApiRequestError || error instanceof InvalidApiResponseError) {
           res.status(500).send(error.message);
