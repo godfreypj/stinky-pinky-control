@@ -1,10 +1,11 @@
 // src/services/newRound.ts
 
 import axios from 'axios';
-import { Round } from '../interfaces/round';
-import { Config } from '../interfaces/config'
-import { ApiRequestError } from '../utils/errors';
-import { generateIdToken } from '../utils/token';
+import { Round } from '../../interfaces/round';
+import { Config } from '../../interfaces/config'
+import { ApiRequestError } from '../../utils/errors';
+import { generateIdToken } from '../../utils/token';
+import { isRoundUnique } from './sanitizeRound';
 
 /**
  * Given the applications config, query the Brain application for a new round.
@@ -38,25 +39,32 @@ export const generateNewRound = async (config: Config): Promise<Round> => {
       }
     }
 
-    // Call the brain
-    const response = await axios.get(apiUrl + 'api/generate', {
-      baseURL: apiUrl,
-      headers: headers,
-      withCredentials: true,
-    });
+    let round: Round | null = null;
+    let isUnique = false;
 
-    // Make sure we return the error from the brain, if there was one
-    if (response.data.error) {
-      throw new ApiRequestError(`API returned an error: ${response.data.error}`);
+    while(!isUnique) {
+      // Call the brain
+      const response = await axios.get(apiUrl + 'api/generate', {
+        baseURL: apiUrl,
+        headers: headers,
+        withCredentials: true,
+      });
+
+      // Make sure we return the error from the brain, if there was one
+      if (response.data.error) {
+        throw new ApiRequestError(`API returned an error: ${response.data.error}`);
+      }
+
+      // Build a new round object and return it
+      round = {
+        word1: response.data.text.word1,
+        word2: response.data.text.word2,
+        clue1: response.data.text.clue1,
+        clue2: response.data.text.clue2,
+      };
+
+      isUnique = await isRoundUnique(round, config.roundCollection);
     }
-
-    // Build a new round object and return it
-    const round: Round = {
-      word1: response.data.text.word1,
-      word2: response.data.text.word2,
-      clue1: response.data.text.clue1,
-      clue2: response.data.text.clue2,
-    };
 
     return round; 
 
